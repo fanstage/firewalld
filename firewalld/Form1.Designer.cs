@@ -38,8 +38,8 @@ namespace firewalld
             this.Port = new System.Windows.Forms.RadioButton();
             this.Application = new System.Windows.Forms.RadioButton();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.radioButton12 = new System.Windows.Forms.RadioButton();
-            this.radioButton11 = new System.Windows.Forms.RadioButton();
+            this.In = new System.Windows.Forms.RadioButton();
+            this.Out = new System.Windows.Forms.RadioButton();
             this.local_addr = new System.Windows.Forms.TextBox();
             this.local_port = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -77,6 +77,7 @@ namespace firewalld
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.Refresh = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -194,8 +195,8 @@ namespace firewalld
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.radioButton12);
-            this.groupBox9.Controls.Add(this.radioButton11);
+            this.groupBox9.Controls.Add(this.In);
+            this.groupBox9.Controls.Add(this.Out);
             this.groupBox9.Controls.Add(this.local_addr);
             this.groupBox9.Controls.Add(this.local_port);
             this.groupBox9.Controls.Add(this.label6);
@@ -212,27 +213,27 @@ namespace firewalld
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Port";
             // 
-            // radioButton12
+            // In
             // 
-            this.radioButton12.AutoSize = true;
-            this.radioButton12.Checked = true;
-            this.radioButton12.Location = new System.Drawing.Point(91, 92);
-            this.radioButton12.Name = "radioButton12";
-            this.radioButton12.Size = new System.Drawing.Size(35, 16);
-            this.radioButton12.TabIndex = 3;
-            this.radioButton12.TabStop = true;
-            this.radioButton12.Text = "In";
-            this.radioButton12.UseVisualStyleBackColor = true;
+            this.In.AutoSize = true;
+            this.In.Checked = true;
+            this.In.Location = new System.Drawing.Point(91, 92);
+            this.In.Name = "In";
+            this.In.Size = new System.Drawing.Size(35, 16);
+            this.In.TabIndex = 3;
+            this.In.TabStop = true;
+            this.In.Text = "In";
+            this.In.UseVisualStyleBackColor = true;
             // 
-            // radioButton11
+            // Out
             // 
-            this.radioButton11.AutoSize = true;
-            this.radioButton11.Location = new System.Drawing.Point(149, 92);
-            this.radioButton11.Name = "radioButton11";
-            this.radioButton11.Size = new System.Drawing.Size(41, 16);
-            this.radioButton11.TabIndex = 3;
-            this.radioButton11.Text = "Out";
-            this.radioButton11.UseVisualStyleBackColor = true;
+            this.Out.AutoSize = true;
+            this.Out.Location = new System.Drawing.Point(149, 92);
+            this.Out.Name = "Out";
+            this.Out.Size = new System.Drawing.Size(41, 16);
+            this.Out.TabIndex = 3;
+            this.Out.Text = "Out";
+            this.Out.UseVisualStyleBackColor = true;
             // 
             // local_addr
             // 
@@ -521,7 +522,7 @@ namespace firewalld
             this.addrule.TabIndex = 2;
             this.addrule.Text = "添加";
             this.addrule.UseVisualStyleBackColor = true;
-            this.addrule.Click += new System.EventHandler(this.addrule_Click_1);
+            this.addrule.Click += new System.EventHandler(this.addrule_Click);
             // 
             // groupBox3
             // 
@@ -554,6 +555,7 @@ namespace firewalld
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.Refresh);
             this.groupBox2.Controls.Add(this.dataGridView1);
             this.groupBox2.Location = new System.Drawing.Point(776, 397);
             this.groupBox2.Name = "groupBox2";
@@ -593,6 +595,16 @@ namespace firewalld
             this.button3.TabIndex = 4;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
+            // 
+            // Refresh
+            // 
+            this.Refresh.Location = new System.Drawing.Point(121, 5);
+            this.Refresh.Name = "Refresh";
+            this.Refresh.Size = new System.Drawing.Size(75, 23);
+            this.Refresh.TabIndex = 1;
+            this.Refresh.Text = "Refresh";
+            this.Refresh.UseVisualStyleBackColor = true;
+            this.Refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
             // Form1
             // 
@@ -673,13 +685,14 @@ namespace firewalld
         private System.Windows.Forms.RadioButton Browse;
         private System.Windows.Forms.RadioButton Drag;
         private System.Windows.Forms.Label move;
-        private System.Windows.Forms.RadioButton radioButton12;
-        private System.Windows.Forms.RadioButton radioButton11;
+        private System.Windows.Forms.RadioButton In;
+        private System.Windows.Forms.RadioButton Out;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button Refresh;
     }
 }
 

@@ -15,7 +15,7 @@ namespace firewalld
 {
     public partial class Form1 : Form
     {
-        string PROTOCOL, Rulename, Description, Action, Fileaddr,LocalAddr, LocalPort, Remote_Addr, Remote_Port;
+        string PROTOCOL, Rulename, Description, Action, Fileaddr,LocalAddr, LocalPort, Remote_Addr, Remote_Port, Direction, netshCommand;
         public Form1()
         {
             InitializeComponent();
@@ -195,7 +195,7 @@ namespace firewalld
             //dataGridView1.DataSource = table;
         }
 
-        private void addrule_Click_1(object sender, EventArgs e)
+        private void addrule_Click(object sender, EventArgs e)
         {
             if(TCP.Checked) 
             { 
@@ -261,7 +261,7 @@ namespace firewalld
                         MessageBox.Show("请输入文件路径！");
                     }
                 }
-                string netshCommand = "advfirewall firewall add rule name=" + Rulename + " dir=in action=" + Action + " protocol=" + PROTOCOL + " program=" + Fileaddr + " enable=yes";
+                netshCommand = "advfirewall firewall add rule name=\"" + Rulename + "\" dir=in "  + Action + " protocol=" + PROTOCOL + " program=" + Fileaddr + " enable=yes";
             }
             else if (Port.Checked)
             {
@@ -271,7 +271,15 @@ namespace firewalld
                     LocalPort = local_port.Text;
                     Remote_Addr = remoteaddr.Text;
                     Remote_Port = remoteport.Text;
-                    string netshCommand = "advfirewall firewall add rule name=" + Rulename + " dir=in action=" + Action + " protocol=" + PROTOCOL + " localport=" + LocalPort + " remoteip=" + Remote_Addr + " remoteport=" + Remote_Port + " enable=yes";
+                    if(In.Checked)
+                    { 
+                        Direction = "in";
+                    }
+                    else if(Out.Checked)
+                    {
+                        Direction = "out";
+                    }
+                    netshCommand = "advfirewall firewall add rule name=" + Rulename + " dir=" + Direction + " action="+ Action + " protocol=" + PROTOCOL + " localport=" + LocalPort + " remoteip=" + Remote_Addr + " remoteport=" + Remote_Port + " enable=yes";
                 }
                 else
                 {
@@ -282,7 +290,7 @@ namespace firewalld
             // 创建一个Process实例
             Process process = new Process();
             process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.Arguments = "advfirewall firewall show rule name=远程协助(PNRP-In)";
+            process.StartInfo.Arguments = netshCommand;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.CreateNoWindow = true;
@@ -349,10 +357,7 @@ namespace firewalld
         }
         private void move_DragDrop(object sender, DragEventArgs e)
         {
-            // 获取拖放的文件路径
             string filePath = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
-
-            // 将文件路径显示在文本框中
             file_addr1.Text = filePath;
         }
 
