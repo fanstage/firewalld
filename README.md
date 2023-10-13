@@ -9,13 +9,13 @@
 
 #### 安装教程
 
-1.  引用FirewallApi.dll
+1.  使用netsh
 2.  xxxx
 3.  xxxx
 
 #### 使用说明
 
-1.  xxxx
+1.  需要以管理员权限启动程序
 2.  xxxx
 3.  xxxx
 
