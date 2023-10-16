@@ -74,10 +74,12 @@ namespace firewalld
             this.button2 = new System.Windows.Forms.Button();
             this.pre = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Refresh = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.ex_result = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Show = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -540,6 +542,9 @@ namespace firewalld
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.ex_result);
+            this.groupBox3.Controls.Add(this.Show);
             this.groupBox3.Controls.Add(this.button2);
             this.groupBox3.Controls.Add(this.pre);
             this.groupBox3.Location = new System.Drawing.Point(776, 55);
@@ -552,24 +557,24 @@ namespace firewalld
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(671, 109);
+            this.button2.Location = new System.Drawing.Point(832, 245);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(82, 50);
             this.button2.TabIndex = 1;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // pre
             // 
-            this.pre.Location = new System.Drawing.Point(7, 34);
+            this.pre.Location = new System.Drawing.Point(261, 34);
             this.pre.Name = "pre";
-            this.pre.Size = new System.Drawing.Size(658, 261);
+            this.pre.Size = new System.Drawing.Size(544, 261);
             this.pre.TabIndex = 0;
             this.pre.Text = "";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.Refresh);
             this.groupBox2.Controls.Add(this.dataGridView1);
             this.groupBox2.Location = new System.Drawing.Point(776, 397);
             this.groupBox2.Name = "groupBox2";
@@ -577,16 +582,6 @@ namespace firewalld
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Rules";
-            // 
-            // Refresh
-            // 
-            this.Refresh.Location = new System.Drawing.Point(121, 5);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Size = new System.Drawing.Size(75, 23);
-            this.Refresh.TabIndex = 1;
-            this.Refresh.Text = "Refresh";
-            this.Refresh.UseVisualStyleBackColor = true;
-            this.Refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
             // dataGridView1
             // 
@@ -620,6 +615,34 @@ namespace firewalld
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
             // 
+            // ex_result
+            // 
+            this.ex_result.Location = new System.Drawing.Point(9, 57);
+            this.ex_result.Multiline = true;
+            this.ex_result.Name = "ex_result";
+            this.ex_result.Size = new System.Drawing.Size(246, 237);
+            this.ex_result.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 39);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "执行结果";
+            // 
+            // Show
+            // 
+            this.Show.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Show.Location = new System.Drawing.Point(832, 34);
+            this.Show.Name = "Show";
+            this.Show.Size = new System.Drawing.Size(82, 50);
+            this.Show.TabIndex = 1;
+            this.Show.Text = "Show";
+            this.Show.UseVisualStyleBackColor = true;
+            this.Show.Click += new System.EventHandler(this.Show_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -650,6 +673,7 @@ namespace firewalld
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -706,7 +730,9 @@ namespace firewalld
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button Refresh;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox ex_result;
+        private System.Windows.Forms.Button Show;
     }
 }
 

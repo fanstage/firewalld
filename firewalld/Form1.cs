@@ -217,6 +217,45 @@ namespace firewalld
             }
         }
 
+        private void Show_Click(object sender, EventArgs e)
+        {
+            string showCommand = "netsh advfirewall firewall show rule name=\"" + Rulename + "\"";
+            List<string> ruleContent = ExecuteCommand(showCommand);
+
+            // 将规则内容展示在pre TextBox中
+            pre.Text = string.Join(Environment.NewLine, ruleContent);
+        }
+        private List<string> ExecuteCommand(string command)
+        {
+            // 创建一个ProcessStartInfo对象来设置进程属性
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "cmd.exe"; // 指定要执行的命令行程序
+            startInfo.Arguments = "/c " + command; // 指定要执行的命令
+            startInfo.RedirectStandardOutput = true; // 重定向标准输出
+            startInfo.UseShellExecute = false; // 不使用操作系统外壳程序启动进程
+            startInfo.CreateNoWindow = true; // 不创建窗口
+                                             // 创建一个Process对象并启动进程
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
+            // 读取命令行输出结果
+            List<string> outputLines = new List<string>();
+            while (!process.StandardOutput.EndOfStream)
+            {
+                string line = process.StandardOutput.ReadLine();
+                outputLines.Add(line);
+            }
+            // 等待进程执行完毕
+            process.WaitForExit();
+            return outputLines;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string showCommand = "netsh advfirewall firewall show rule name=\"" + Rulename + "\"";
+            ExecuteCommand(showCommand);
+        }
+
         private void button4_Click(object sender, EventArgs e)
         {
             // 创建 OpenFileDialog 实例
@@ -346,17 +385,11 @@ namespace firewalld
 
             // 启动进程
             process.Start();
-            List<string> outputLines = new List<string>();
-            while (!process.StandardOutput.EndOfStream)
-            {
-                string line = process.StandardOutput.ReadLine();
-                outputLines.Add(line);
-            }
             // 读取输出结果
+            string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            pre.Text=  string.Join(Environment.NewLine, outputLines);
+            ex_result.Text = output;
         }
-
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
         }
