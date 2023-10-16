@@ -74,10 +74,10 @@ namespace firewalld
             this.button2 = new System.Windows.Forms.Button();
             this.pre = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Refresh = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.Refresh = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -140,12 +140,15 @@ namespace firewalld
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.Out);
+            this.groupBox7.Controls.Add(this.In);
             this.groupBox7.Controls.Add(this.groupBox6);
             this.groupBox7.Controls.Add(this.groupBox5);
             this.groupBox7.Controls.Add(this.Rule_name);
             this.groupBox7.Controls.Add(this.label1);
             this.groupBox7.Controls.Add(this.groupBox4);
             this.groupBox7.Controls.Add(this.description);
+            this.groupBox7.Controls.Add(this.label15);
             this.groupBox7.Controls.Add(this.label13);
             this.groupBox7.Controls.Add(this.addrule);
             this.groupBox7.Location = new System.Drawing.Point(186, 55);
@@ -165,7 +168,7 @@ namespace firewalld
             this.groupBox6.Controls.Add(this.groupBox8);
             this.groupBox6.Location = new System.Drawing.Point(35, 252);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(511, 411);
+            this.groupBox6.Size = new System.Drawing.Size(511, 365);
             this.groupBox6.TabIndex = 15;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Details";
@@ -180,6 +183,7 @@ namespace firewalld
             this.Port.TabStop = true;
             this.Port.Text = "Port";
             this.Port.UseVisualStyleBackColor = true;
+            this.Port.CheckedChanged += new System.EventHandler(this.Port_CheckedChanged);
             // 
             // Application
             // 
@@ -192,23 +196,21 @@ namespace firewalld
             this.Application.TabStop = true;
             this.Application.Text = "Application";
             this.Application.UseVisualStyleBackColor = true;
+            this.Application.CheckedChanged += new System.EventHandler(this.Application_CheckedChanged);
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.In);
-            this.groupBox9.Controls.Add(this.Out);
             this.groupBox9.Controls.Add(this.local_addr);
             this.groupBox9.Controls.Add(this.local_port);
             this.groupBox9.Controls.Add(this.label6);
             this.groupBox9.Controls.Add(this.label5);
-            this.groupBox9.Controls.Add(this.label15);
             this.groupBox9.Controls.Add(this.remoteaddr);
             this.groupBox9.Controls.Add(this.remoteport);
             this.groupBox9.Controls.Add(this.label12);
             this.groupBox9.Controls.Add(this.label11);
             this.groupBox9.Location = new System.Drawing.Point(18, 272);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(487, 124);
+            this.groupBox9.Size = new System.Drawing.Size(487, 82);
             this.groupBox9.TabIndex = 0;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Port";
@@ -217,18 +219,19 @@ namespace firewalld
             // 
             this.In.AutoSize = true;
             this.In.Checked = true;
-            this.In.Location = new System.Drawing.Point(91, 92);
+            this.In.Location = new System.Drawing.Point(140, 626);
             this.In.Name = "In";
             this.In.Size = new System.Drawing.Size(35, 16);
             this.In.TabIndex = 3;
             this.In.TabStop = true;
             this.In.Text = "In";
             this.In.UseVisualStyleBackColor = true;
+            this.In.CheckedChanged += new System.EventHandler(this.In_CheckedChanged);
             // 
             // Out
             // 
             this.Out.AutoSize = true;
-            this.Out.Location = new System.Drawing.Point(149, 92);
+            this.Out.Location = new System.Drawing.Point(202, 626);
             this.Out.Name = "Out";
             this.Out.Size = new System.Drawing.Size(41, 16);
             this.Out.TabIndex = 3;
@@ -241,6 +244,7 @@ namespace firewalld
             this.local_addr.Name = "local_addr";
             this.local_addr.Size = new System.Drawing.Size(154, 21);
             this.local_addr.TabIndex = 5;
+            this.local_addr.Text = "*";
             // 
             // local_port
             // 
@@ -272,7 +276,7 @@ namespace firewalld
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(13, 96);
+            this.label15.Location = new System.Drawing.Point(33, 630);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(29, 12);
             this.label15.TabIndex = 7;
@@ -284,6 +288,7 @@ namespace firewalld
             this.remoteaddr.Name = "remoteaddr";
             this.remoteaddr.Size = new System.Drawing.Size(154, 21);
             this.remoteaddr.TabIndex = 6;
+            this.remoteaddr.Text = "*";
             // 
             // remoteport
             // 
@@ -291,6 +296,7 @@ namespace firewalld
             this.remoteport.Name = "remoteport";
             this.remoteport.Size = new System.Drawing.Size(154, 21);
             this.remoteport.TabIndex = 6;
+            this.remoteport.Text = "*";
             // 
             // label12
             // 
@@ -331,7 +337,7 @@ namespace firewalld
             // 
             this.move.AllowDrop = true;
             this.move.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.move.Location = new System.Drawing.Point(149, 17);
+            this.move.Location = new System.Drawing.Point(91, 19);
             this.move.Name = "move";
             this.move.Size = new System.Drawing.Size(60, 40);
             this.move.TabIndex = 2;
@@ -341,7 +347,7 @@ namespace firewalld
             // 
             // file_addr1
             // 
-            this.file_addr1.Location = new System.Drawing.Point(253, 26);
+            this.file_addr1.Location = new System.Drawing.Point(194, 26);
             this.file_addr1.Name = "file_addr1";
             this.file_addr1.Size = new System.Drawing.Size(197, 21);
             this.file_addr1.TabIndex = 1;
@@ -350,12 +356,12 @@ namespace firewalld
             // 
             this.file_addr3.Location = new System.Drawing.Point(149, 123);
             this.file_addr3.Name = "file_addr3";
-            this.file_addr3.Size = new System.Drawing.Size(301, 21);
+            this.file_addr3.Size = new System.Drawing.Size(242, 21);
             this.file_addr3.TabIndex = 1;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(149, 65);
+            this.button4.Location = new System.Drawing.Point(91, 69);
             this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(73, 32);
@@ -366,7 +372,7 @@ namespace firewalld
             // 
             // file_addr
             // 
-            this.file_addr.Location = new System.Drawing.Point(253, 76);
+            this.file_addr.Location = new System.Drawing.Point(194, 76);
             this.file_addr.Margin = new System.Windows.Forms.Padding(2);
             this.file_addr.Name = "file_addr";
             this.file_addr.Size = new System.Drawing.Size(197, 21);
@@ -381,6 +387,7 @@ namespace firewalld
             this.Typein.TabIndex = 0;
             this.Typein.Text = "typein";
             this.Typein.UseVisualStyleBackColor = true;
+            this.Typein.CheckedChanged += new System.EventHandler(this.Typein_CheckedChanged);
             // 
             // Browse
             // 
@@ -393,6 +400,7 @@ namespace firewalld
             this.Browse.TabStop = true;
             this.Browse.Text = "browse";
             this.Browse.UseVisualStyleBackColor = true;
+            this.Browse.CheckedChanged += new System.EventHandler(this.Browse_CheckedChanged);
             // 
             // Drag
             // 
@@ -403,6 +411,7 @@ namespace firewalld
             this.Drag.TabIndex = 0;
             this.Drag.Text = "drag";
             this.Drag.UseVisualStyleBackColor = true;
+            this.Drag.CheckedChanged += new System.EventHandler(this.Drag_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -424,6 +433,7 @@ namespace firewalld
             this.Block.TabIndex = 0;
             this.Block.Text = "block";
             this.Block.UseVisualStyleBackColor = true;
+            this.Block.CheckedChanged += new System.EventHandler(this.Block_CheckedChanged);
             // 
             // Allow
             // 
@@ -436,12 +446,13 @@ namespace firewalld
             this.Allow.TabStop = true;
             this.Allow.Text = "allow";
             this.Allow.UseVisualStyleBackColor = true;
+            this.Allow.CheckedChanged += new System.EventHandler(this.Allow_CheckedChanged);
             // 
             // Rule_name
             // 
             this.Rule_name.Location = new System.Drawing.Point(63, 111);
             this.Rule_name.Name = "Rule_name";
-            this.Rule_name.Size = new System.Drawing.Size(199, 21);
+            this.Rule_name.Size = new System.Drawing.Size(172, 21);
             this.Rule_name.TabIndex = 13;
             // 
             // label1
@@ -474,6 +485,7 @@ namespace firewalld
             this.UDP.TabIndex = 0;
             this.UDP.Text = "UDP";
             this.UDP.UseVisualStyleBackColor = true;
+            this.UDP.CheckedChanged += new System.EventHandler(this.UDP_CheckedChanged);
             // 
             // ICMP
             // 
@@ -484,6 +496,7 @@ namespace firewalld
             this.ICMP.TabIndex = 0;
             this.ICMP.Text = "ICMP";
             this.ICMP.UseVisualStyleBackColor = true;
+            this.ICMP.CheckedChanged += new System.EventHandler(this.ICMP_CheckedChanged);
             // 
             // TCP
             // 
@@ -496,12 +509,13 @@ namespace firewalld
             this.TCP.TabStop = true;
             this.TCP.Text = "TCP";
             this.TCP.UseVisualStyleBackColor = true;
+            this.TCP.CheckedChanged += new System.EventHandler(this.TCP_CheckedChanged);
             // 
             // description
             // 
             this.description.Location = new System.Drawing.Point(63, 138);
             this.description.Name = "description";
-            this.description.Size = new System.Drawing.Size(200, 21);
+            this.description.Size = new System.Drawing.Size(172, 21);
             this.description.TabIndex = 10;
             // 
             // label13
@@ -564,6 +578,16 @@ namespace firewalld
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Rules";
             // 
+            // Refresh
+            // 
+            this.Refresh.Location = new System.Drawing.Point(121, 5);
+            this.Refresh.Name = "Refresh";
+            this.Refresh.Size = new System.Drawing.Size(75, 23);
+            this.Refresh.TabIndex = 1;
+            this.Refresh.Text = "Refresh";
+            this.Refresh.UseVisualStyleBackColor = true;
+            this.Refresh.Click += new System.EventHandler(this.refresh_Click);
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
@@ -595,16 +619,6 @@ namespace firewalld
             this.button3.TabIndex = 4;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
-            // 
-            // Refresh
-            // 
-            this.Refresh.Location = new System.Drawing.Point(121, 5);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Size = new System.Drawing.Size(75, 23);
-            this.Refresh.TabIndex = 1;
-            this.Refresh.Text = "Refresh";
-            this.Refresh.UseVisualStyleBackColor = true;
-            this.Refresh.Click += new System.EventHandler(this.refresh_Click);
             // 
             // Form1
             // 

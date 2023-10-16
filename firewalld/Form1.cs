@@ -15,7 +15,11 @@ namespace firewalld
 {
     public partial class Form1 : Form
     {
-        string PROTOCOL, Rulename, Description, Action, Fileaddr,LocalAddr, LocalPort, Remote_Addr, Remote_Port, Direction, netshCommand;
+        string Rulename, Description, Fileaddr, LocalAddr, LocalPort, Remote_Addr, Remote_Port, netshCommand;
+        string PROTOCOL = "TCP";
+        string Action = "allow";
+        string Direction = "in";
+        int op = 1;
         public Form1()
         {
             InitializeComponent();
@@ -104,17 +108,94 @@ namespace firewalld
                 table.Rows.Add(rule.Name,rule.Description,rule.Action,rule.Enabled,rule.ApplicationName,rule.LocalAddresses,rule.LocalPorts,rule.RemoteAddresses,rule.RemotePorts,rule.Protocol,rule.Direction);
             }
             dataGridView1.DataSource = table;
-            DataGridViewButtonColumn deleteButtonColumn = new DataGridViewButtonColumn();
-            deleteButtonColumn.Name = "deleteColumn";
-            deleteButtonColumn.Text = "删除";
-            deleteButtonColumn.UseColumnTextForButtonValue = true;
-            //dataGridView1.Columns.Add(deleteButtonColumn);
+        }
 
-            DataGridViewButtonColumn modifyButtonColumn = new DataGridViewButtonColumn();
-            modifyButtonColumn.Name = "modifyColumn";
-            modifyButtonColumn.Text = "修改";
-            modifyButtonColumn.UseColumnTextForButtonValue = true;
-            //dataGridView1.Columns.Add(modifyButtonColumn);
+        private void TCP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (TCP.Checked)
+            {
+                PROTOCOL = "TCP";
+            }
+        }
+
+        private void UDP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UDP.Checked)
+            {
+                PROTOCOL = "UDP";
+            }
+        }
+
+        private void ICMP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ICMP.Checked)
+            {
+                PROTOCOL = "ICMP";
+            }
+        }
+
+        private void Allow_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Allow.Checked)
+            {
+                Action = "allow";
+            }
+        }
+
+        private void Block_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Block.Checked)
+            {
+                Action = "block";
+            }
+        }
+
+        private void Application_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Application.Checked)
+            {
+                op = 1;
+            }
+        }
+
+        private void Port_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Port.Checked)
+            {
+                op = 2;
+            }
+        }
+
+        private void Drag_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Drag.Checked)
+            {
+                Fileaddr = file_addr1.Text;
+            }
+        }
+
+        private void Browse_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Browse.Checked)
+            {
+                Fileaddr = file_addr.Text;
+            }
+        }
+
+        private void Typein_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Typein.Checked)
+            {
+                Fileaddr = file_addr3.Text;
+            }
+        }
+
+        private void In_CheckedChanged(object sender, EventArgs e)
+        {
+            if (In.Checked)
+            {
+                Direction = "in";
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -197,18 +278,6 @@ namespace firewalld
 
         private void addrule_Click(object sender, EventArgs e)
         {
-            if(TCP.Checked) 
-            { 
-                PROTOCOL = "TCP";
-            }
-            else if (UDP.Checked)
-            {
-                PROTOCOL = "UDP";
-            }
-            else if (ICMP.Checked)
-            {
-                PROTOCOL = "ICMP";
-            }
             if(Rule_name.Text !=  null)
             {
                 Rulename = Rule_name.Text;
@@ -225,45 +294,31 @@ namespace firewalld
             {
                 MessageBox.Show("请输入规则描述！");
             }
-            if (Allow.Checked)
+            if (op == 1)
             {
-                Action = "Allow";
-            }
-            else if (Block.Checked)
-            {
-                Action = "Block";
-            }
-            if (Application.Checked)
-            {
-                /*if(Drag.Checked)
+                if(Browse.Checked)
                 {
-
-                }*/
-                if (Browse.Checked)
-                {
-                    if (file_addr.Text != null)
-                    {
-                        Fileaddr = file_addr.Text;
-                    }
-                    else
-                    {
-                        MessageBox.Show("请选择文件！");
-                    }
+                    Fileaddr = file_addr.Text;
                 }
-                else if (Typein.Checked)
+                else if(Drag.Checked)
                 {
-                    if (file_addr3.Text != null)
-                    {
-                        Fileaddr = file_addr3.Text;
-                    }
-                    else
-                    {
-                        MessageBox.Show("请输入文件路径！");
-                    }
+                    Fileaddr = file_addr1.Text;
                 }
-                netshCommand = "advfirewall firewall add rule name=\"" + Rulename + "\" dir=in "  + Action + " protocol=" + PROTOCOL + " program=" + Fileaddr + " enable=yes";
+                else if(Typein.Checked)
+                {
+                    Fileaddr = file_addr3.Text;
+                }
+                if (Fileaddr != null)
+                {
+                    netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" program=\"{Fileaddr}\" enable=yes";
+                    Console.WriteLine(netshCommand);
+                }
+                else
+                {
+                    MessageBox.Show("请输入文件地址！");
+                }
             }
-            else if (Port.Checked)
+            else if (op == 2)
             {
                 if (local_addr.Text != null && local_port.Text != null && remoteaddr.Text != null && remoteport.Text != null)
                 {
@@ -271,25 +326,19 @@ namespace firewalld
                     LocalPort = local_port.Text;
                     Remote_Addr = remoteaddr.Text;
                     Remote_Port = remoteport.Text;
-                    if(In.Checked)
-                    { 
-                        Direction = "in";
-                    }
-                    else if(Out.Checked)
-                    {
-                        Direction = "out";
-                    }
-                    netshCommand = "advfirewall firewall add rule name=" + Rulename + " dir=" + Direction + " action="+ Action + " protocol=" + PROTOCOL + " localport=" + LocalPort + " remoteip=" + Remote_Addr + " remoteport=" + Remote_Port + " enable=yes";
+                    netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" localip= \"{LocalAddr}\" localport=\"{LocalPort}\" remoteip=\"{Remote_Addr}\" remoteport=\"{Remote_Port}\" enable=yes";
                 }
                 else
                 {
                     MessageBox.Show("请输入完整的端口信息！");
                 }
             }
-
-            // 创建一个Process实例
+            else
+            {
+                MessageBox.Show("发生错误，请检查输入的内容再重新添加");
+            }
             Process process = new Process();
-            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.FileName = "netsh.exe";
             process.StartInfo.Arguments = netshCommand;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
@@ -297,50 +346,19 @@ namespace firewalld
 
             // 启动进程
             process.Start();
-
+            List<string> outputLines = new List<string>();
+            while (!process.StandardOutput.EndOfStream)
+            {
+                string line = process.StandardOutput.ReadLine();
+                outputLines.Add(line);
+            }
             // 读取输出结果
-            string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            pre.Text = output;
+            pre.Text=  string.Join(Environment.NewLine, outputLines);
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            /*Type policyType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-            INetFwPolicy2 policy = (INetFwPolicy2)Activator.CreateInstance(policyType);
-
-            // 获取防火墙规则集合
-            INetFwRules rules = policy.Rules;
-
-            // 处理删除按钮
-            if (e.ColumnIndex == dataGridView1.Columns["deleteColumn"].Index)
-            {
-                DialogResult result = MessageBox.Show("您确定要删除此规则吗？", "确认", MessageBoxButtons.OKCancel);
-                if (result == DialogResult.OK) 
-                {
-                    // 获取要删除的规则名称
-                    string ruleName = dataGridView1.Rows[e.RowIndex].Cells["描述"].Value.ToString();
-
-                    // 删除规则
-                    rules.Remove(ruleName);
-
-                    // 从 DataGridView 中删除行
-                    dataGridView1.Rows.RemoveAt(e.RowIndex);
-                }
-                
-            }
-            if (e.ColumnIndex == dataGridView1.Columns["modifyColumn"].Index)
-            {
-                // 获取要修改的规则名称
-                string ruleName = dataGridView1.Rows[e.RowIndex].Cells["描述"].Value.ToString();
-
-                // 获取要修改的规则
-                INetFwRule rule = rules.Item(ruleName);
-
-                // 打开修改窗口
-                ModifyForm modifyForm = new ModifyForm(rule);
-                modifyForm.ShowDialog();
-            }*/
         }
         private void move_DragEnter(object sender, DragEventArgs e)
         {
