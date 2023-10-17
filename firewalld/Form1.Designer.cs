@@ -34,17 +34,16 @@ namespace firewalld
             this.OpenFire = new System.Windows.Forms.Button();
             this.status = new System.Windows.Forms.Panel();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.Out = new System.Windows.Forms.RadioButton();
+            this.In = new System.Windows.Forms.RadioButton();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.Port = new System.Windows.Forms.RadioButton();
             this.Application = new System.Windows.Forms.RadioButton();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.In = new System.Windows.Forms.RadioButton();
-            this.Out = new System.Windows.Forms.RadioButton();
             this.local_addr = new System.Windows.Forms.TextBox();
             this.local_port = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
             this.remoteaddr = new System.Windows.Forms.TextBox();
             this.remoteport = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -68,9 +67,11 @@ namespace firewalld
             this.ICMP = new System.Windows.Forms.RadioButton();
             this.TCP = new System.Windows.Forms.RadioButton();
             this.description = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.addrule = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Show = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pre = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -79,7 +80,6 @@ namespace firewalld
             this.button3 = new System.Windows.Forms.Button();
             this.ex_result = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.Show = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -97,7 +97,7 @@ namespace firewalld
             this.groupBox1.Controls.Add(this.CloseFire);
             this.groupBox1.Controls.Add(this.OpenFire);
             this.groupBox1.Controls.Add(this.status);
-            this.groupBox1.Location = new System.Drawing.Point(28, 55);
+            this.groupBox1.Location = new System.Drawing.Point(11, 55);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
@@ -162,6 +162,29 @@ namespace firewalld
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "添加规则";
             // 
+            // Out
+            // 
+            this.Out.AutoSize = true;
+            this.Out.Location = new System.Drawing.Point(202, 626);
+            this.Out.Name = "Out";
+            this.Out.Size = new System.Drawing.Size(41, 16);
+            this.Out.TabIndex = 3;
+            this.Out.Text = "Out";
+            this.Out.UseVisualStyleBackColor = true;
+            // 
+            // In
+            // 
+            this.In.AutoSize = true;
+            this.In.Checked = true;
+            this.In.Location = new System.Drawing.Point(140, 626);
+            this.In.Name = "In";
+            this.In.Size = new System.Drawing.Size(35, 16);
+            this.In.TabIndex = 3;
+            this.In.TabStop = true;
+            this.In.Text = "In";
+            this.In.UseVisualStyleBackColor = true;
+            this.In.CheckedChanged += new System.EventHandler(this.In_CheckedChanged);
+            // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.Port);
@@ -217,29 +240,6 @@ namespace firewalld
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Port";
             // 
-            // In
-            // 
-            this.In.AutoSize = true;
-            this.In.Checked = true;
-            this.In.Location = new System.Drawing.Point(140, 626);
-            this.In.Name = "In";
-            this.In.Size = new System.Drawing.Size(35, 16);
-            this.In.TabIndex = 3;
-            this.In.TabStop = true;
-            this.In.Text = "In";
-            this.In.UseVisualStyleBackColor = true;
-            this.In.CheckedChanged += new System.EventHandler(this.In_CheckedChanged);
-            // 
-            // Out
-            // 
-            this.Out.AutoSize = true;
-            this.Out.Location = new System.Drawing.Point(202, 626);
-            this.Out.Name = "Out";
-            this.Out.Size = new System.Drawing.Size(41, 16);
-            this.Out.TabIndex = 3;
-            this.Out.Text = "Out";
-            this.Out.UseVisualStyleBackColor = true;
-            // 
             // local_addr
             // 
             this.local_addr.Location = new System.Drawing.Point(91, 20);
@@ -275,15 +275,6 @@ namespace firewalld
             this.label5.Text = "本地地址";
             this.label5.Click += new System.EventHandler(this.label2_Click);
             // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(33, 630);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(29, 12);
-            this.label15.TabIndex = 7;
-            this.label15.Text = "方向";
-            // 
             // remoteaddr
             // 
             this.remoteaddr.Location = new System.Drawing.Point(327, 20);
@@ -298,7 +289,6 @@ namespace firewalld
             this.remoteport.Name = "remoteport";
             this.remoteport.Size = new System.Drawing.Size(154, 21);
             this.remoteport.TabIndex = 6;
-            this.remoteport.Text = "*";
             // 
             // label12
             // 
@@ -520,6 +510,15 @@ namespace firewalld
             this.description.Size = new System.Drawing.Size(172, 21);
             this.description.TabIndex = 10;
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(33, 630);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(29, 12);
+            this.label15.TabIndex = 7;
+            this.label15.Text = "方向";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -542,8 +541,6 @@ namespace firewalld
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.ex_result);
             this.groupBox3.Controls.Add(this.Show);
             this.groupBox3.Controls.Add(this.button2);
             this.groupBox3.Controls.Add(this.pre);
@@ -554,10 +551,21 @@ namespace firewalld
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "预览";
             // 
+            // Show
+            // 
+            this.Show.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Show.Location = new System.Drawing.Point(659, 34);
+            this.Show.Name = "Show";
+            this.Show.Size = new System.Drawing.Size(82, 50);
+            this.Show.TabIndex = 1;
+            this.Show.Text = "Show";
+            this.Show.UseVisualStyleBackColor = true;
+            this.Show.Click += new System.EventHandler(this.Show_Click);
+            // 
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(832, 245);
+            this.button2.Location = new System.Drawing.Point(659, 101);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(82, 50);
             this.button2.TabIndex = 1;
@@ -567,9 +575,9 @@ namespace firewalld
             // 
             // pre
             // 
-            this.pre.Location = new System.Drawing.Point(261, 34);
+            this.pre.Location = new System.Drawing.Point(27, 34);
             this.pre.Name = "pre";
-            this.pre.Size = new System.Drawing.Size(544, 261);
+            this.pre.Size = new System.Drawing.Size(582, 261);
             this.pre.TabIndex = 0;
             this.pre.Text = "";
             // 
@@ -617,31 +625,20 @@ namespace firewalld
             // 
             // ex_result
             // 
-            this.ex_result.Location = new System.Drawing.Point(9, 57);
+            this.ex_result.Location = new System.Drawing.Point(12, 188);
             this.ex_result.Multiline = true;
             this.ex_result.Name = "ex_result";
-            this.ex_result.Size = new System.Drawing.Size(246, 237);
+            this.ex_result.Size = new System.Drawing.Size(124, 432);
             this.ex_result.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 39);
+            this.label2.Location = new System.Drawing.Point(12, 166);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 3;
             this.label2.Text = "执行结果";
-            // 
-            // Show
-            // 
-            this.Show.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Show.Location = new System.Drawing.Point(832, 34);
-            this.Show.Name = "Show";
-            this.Show.Size = new System.Drawing.Size(82, 50);
-            this.Show.TabIndex = 1;
-            this.Show.Text = "Show";
-            this.Show.UseVisualStyleBackColor = true;
-            this.Show.Click += new System.EventHandler(this.Show_Click);
             // 
             // Form1
             // 
@@ -649,7 +646,9 @@ namespace firewalld
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1776, 799);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.button3);
+            this.Controls.Add(this.ex_result);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
@@ -673,10 +672,10 @@ namespace firewalld
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

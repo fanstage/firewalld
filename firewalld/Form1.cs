@@ -10,20 +10,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ServiceProcess;
+using System.IO;
+using System.Threading;
 
 namespace firewalld
 {
     public partial class Form1 : Form
     {
-        string Rulename, Description, Fileaddr, LocalAddr, LocalPort, Remote_Addr, Remote_Port, netshCommand;
+        string Rulename, Description, Fileaddr, LocalAddr, Remote_Addr,  netshCommand, Remote_Port;
         string PROTOCOL = "TCP";
         string Action = "allow";
         string Direction = "in";
+        int LocalPort;
+        private List<string> ruleNames = new List<string>();
+        private List<string> ruleContent = new List<string>();
         int op = 1;
+        string filePath = "log.txt";
         public Form1()
         {
             InitializeComponent();
         }
+        private void RemoveRule()
+        {
+            if (ruleNames.Count > 0)
+            {
+                ruleNames.RemoveAt(0);
+            }
+        }
+
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
@@ -203,10 +217,6 @@ namespace firewalld
 
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
         public static void StopFirewallService()
         {
             ServiceController sc = new ServiceController("MpsSvc");
@@ -219,11 +229,13 @@ namespace firewalld
 
         private void Show_Click(object sender, EventArgs e)
         {
-            string showCommand = "netsh advfirewall firewall show rule name=\"" + Rulename + "\"";
-            List<string> ruleContent = ExecuteCommand(showCommand);
-
-            // 将规则内容展示在pre TextBox中
-            pre.Text = string.Join(Environment.NewLine, ruleContent);
+            foreach (string ruleName in ruleNames)
+            {
+                string showCommand = "netsh advfirewall firewall show rule name=\"" + ruleName + "\"";
+                ruleContent = ExecuteCommand(showCommand);
+            }
+                // 将规则内容展示在pre TextBox中
+                pre.Text = string.Join(Environment.NewLine, ruleContent);
         }
         private List<string> ExecuteCommand(string command)
         {
@@ -252,7 +264,7 @@ namespace firewalld
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string showCommand = "netsh advfirewall firewall show rule name=\"" + Rulename + "\"";
+            string showCommand = "netsh advfirewall firewall delete rule name=\"" + Rulename + "\"";
             ExecuteCommand(showCommand);
         }
 
@@ -314,10 +326,13 @@ namespace firewalld
             }
             //dataGridView1.DataSource = table;
         }
-
+        static void MessageShow(string message)
+        {
+            MessageBox.Show(message);
+        }
         private void addrule_Click(object sender, EventArgs e)
         {
-            if(Rule_name.Text !=  null)
+            if (Rule_name.Text !=  null)
             {
                 Rulename = Rule_name.Text;
             }
@@ -347,25 +362,40 @@ namespace firewalld
                 {
                     Fileaddr = file_addr3.Text;
                 }
-                if (Fileaddr != null)
+                if (Fileaddr != "")
                 {
                     netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" program=\"{Fileaddr}\" enable=yes";
                     Console.WriteLine(netshCommand);
                 }
                 else
                 {
-                    MessageBox.Show("请输入文件地址！");
+                    Thread thread = new Thread( MessageShow("请输入文件地址！"));
+                    thread.Start();
+
+                    // 继续执行其他代码
+                    Console.WriteLine("程序继续执行");
+
+                    // 等待线程结束
+                    thread.Join();
+                    MessageBox.Show();
                 }
             }
             else if (op == 2)
             {
-                if (local_addr.Text != null && local_port.Text != null && remoteaddr.Text != null && remoteport.Text != null)
+                if (local_addr.Text != null && local_port.Text != null && remoteaddr.Text != null)
                 {
                     LocalAddr = local_addr.Text;
-                    LocalPort = local_port.Text;
+                    LocalPort = Convert.ToInt32(local_port.Text);
                     Remote_Addr = remoteaddr.Text;
-                    Remote_Port = remoteport.Text;
-                    netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" localip= \"{LocalAddr}\" localport=\"{LocalPort}\" remoteip=\"{Remote_Addr}\" remoteport=\"{Remote_Port}\" enable=yes";
+                    if (remoteport.Text == "")
+                    {
+                        netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" localip= \"{LocalAddr}\" localport={LocalPort} remoteip=\"{Remote_Addr}\" enable=yes";
+                    }
+                    else
+                    {
+                        Remote_Port = remoteport.Text;
+                        netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" localip= \"{LocalAddr}\" localport={LocalPort} remoteip=\"{Remote_Addr}\" remoteport={Remote_Port} enable=yes";
+                    }
                 }
                 else
                 {
@@ -389,6 +419,22 @@ namespace firewalld
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             ex_result.Text = output;
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
+            // 获取当前时间
+            string currentTime = DateTime.Now.ToString();
+            // 使用 StreamWriter 追加写入文件
+            using (StreamWriter writer = File.AppendText(filePath))
+            {
+                writer.WriteLine(currentTime+ "  netsh " + netshCommand +"  " + output); // 写入当前时间
+            }
+            if (ruleNames.Count == 2)
+            {
+                ruleNames.RemoveAt(0);
+            }
+            ruleNames.Add(Rulename);
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -411,7 +457,6 @@ namespace firewalld
             string filePath = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
             file_addr1.Text = filePath;
         }
-
         private void move_Click(object sender, EventArgs e)
         {
 
