@@ -1,7 +1,7 @@
 # wirewalld
 
 #### 介绍
-用于对防火墙进行操作，打开关闭，以及规则的相关操作
+可以对防火墙进行打开关闭操作，以及可以对防火墙规则进行添加，添加之后的规则的最新两条会在右边的预览窗口中展示，预览窗口中可以对添加的规则进行取消。
 
 #### 软件架构
 软件架构说明
@@ -9,9 +9,9 @@
 
 #### 安装教程
 
-1.  引用FirewallApi.dll
-2.  xxxx
-3.  xxxx
+1.  使用Visual Studio开发
+2.  需要以管理员身份运行
+3.  目前打开软件之后第一次的添加规则操作在执行结果中不会显示结果，暂时不知道原因
 
 #### 使用说明
 
@@ -21,17 +21,5 @@
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1.  fanstage
 
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
