@@ -289,7 +289,7 @@ namespace firewalld
                 string currentTime = DateTime.Now.ToString();
                 using (StreamWriter writer = File.AppendText(filePath))
                 {
-                    writer.WriteLine(currentTime + "  netsh " + deleteCommand); // 写入当前时间
+                    writer.WriteLine(currentTime + deleteCommand); // 写入当前时间
                 }
                 // 从ruleNames列表中移除已删除的规则名称
                 ruleNames.RemoveAt(0);
