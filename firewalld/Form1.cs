@@ -21,11 +21,12 @@ namespace firewalld
         string PROTOCOL = "TCP";
         string Action = "allow";
         string Direction = "in";
-        int LocalPort;
+        string LocalPort;
         private List<string> ruleNames = new List<string>();
-        private List<string> ruleContent = new List<string>();
         int op = 1;
         string filePath = "log.txt";
+        string output;
+        string currentTime;
         public Form1()
         {
             InitializeComponent();
@@ -229,13 +230,23 @@ namespace firewalld
 
         private void Show_Click(object sender, EventArgs e)
         {
-            foreach (string ruleName in ruleNames)
+            /*foreach (string ruleName in ruleNames)
             {
                 string showCommand = "netsh advfirewall firewall show rule name=\"" + ruleName + "\"";
                 ruleContent = ExecuteCommand(showCommand);
             }
                 // 将规则内容展示在pre TextBox中
-                pre.Text = string.Join(Environment.NewLine, ruleContent);
+                pre.Text = string.Join(Environment.NewLine, ruleContent);*/
+            List<string> ruleContentList = new List<string>(); // 定义一个列表来存储规则内容
+            foreach (string ruleName in ruleNames)
+            {
+                string showCommand = "netsh advfirewall firewall show rule name=\"" + ruleName + "\"";
+                List<string> ruleContentLines = ExecuteCommand(showCommand); // 获取规则内容行列表
+                string ruleContent = string.Join(Environment.NewLine, ruleContentLines); // 将规则内容行列表连接成一个字符串
+                ruleContentList.Add(ruleContent); // 将规则内容添加到列表中
+            }
+            // 将规则内容展示在pre TextBox中
+            pre.Text = string.Join(Environment.NewLine, ruleContentList);
         }
         private List<string> ExecuteCommand(string command)
         {
@@ -264,8 +275,25 @@ namespace firewalld
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string showCommand = "netsh advfirewall firewall delete rule name=\"" + Rulename + "\"";
-            ExecuteCommand(showCommand);
+            /*string showCommand = "netsh advfirewall firewall delete rule name=\"" + ruleNames[0] + "\"";
+            ExecuteCommand(showCommand);*/
+            if (ruleNames.Count > 0)
+            {
+                string ruleNameToDelete = ruleNames[0]; // 获取第一个规则名称
+                string deleteCommand = "netsh advfirewall firewall delete rule name=\"" + ruleNameToDelete + "\"";
+                ExecuteCommand(deleteCommand); // 执行删除规则的命令
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();
+                }
+                string currentTime = DateTime.Now.ToString();
+                using (StreamWriter writer = File.AppendText(filePath))
+                {
+                    writer.WriteLine(currentTime + "  netsh " + deleteCommand); // 写入当前时间
+                }
+                // 从ruleNames列表中移除已删除的规则名称
+                ruleNames.RemoveAt(0);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -291,6 +319,11 @@ namespace firewalld
                 // 将文件路径显示在文本框中
                 file_addr.Text = filePath;
             }
+        }
+
+        private void pre_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void refresh_Click(object sender, EventArgs e)
@@ -326,28 +359,10 @@ namespace firewalld
             }
             //dataGridView1.DataSource = table;
         }
-        static void MessageShow(string message)
-        {
-            MessageBox.Show(message);
-        }
         private void addrule_Click(object sender, EventArgs e)
         {
-            if (Rule_name.Text !=  null)
-            {
-                Rulename = Rule_name.Text;
-            }
-            else
-            {
-                MessageBox.Show("请输入规则名称！");
-            }
-            if(description.Text != null)
-            {
-                Description = description.Text;
-            }
-            else
-            {
-                MessageBox.Show("请输入规则描述！");
-            }
+            Rulename = Rule_name.Text;
+            Description = description.Text;
             if (op == 1)
             {
                 if(Browse.Checked)
@@ -365,19 +380,6 @@ namespace firewalld
                 if (Fileaddr != "")
                 {
                     netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" program=\"{Fileaddr}\" enable=yes";
-                    Console.WriteLine(netshCommand);
-                }
-                else
-                {
-                    Thread thread = new Thread( MessageShow("请输入文件地址！"));
-                    thread.Start();
-
-                    // 继续执行其他代码
-                    Console.WriteLine("程序继续执行");
-
-                    // 等待线程结束
-                    thread.Join();
-                    MessageBox.Show();
                 }
             }
             else if (op == 2)
@@ -385,7 +387,8 @@ namespace firewalld
                 if (local_addr.Text != null && local_port.Text != null && remoteaddr.Text != null)
                 {
                     LocalAddr = local_addr.Text;
-                    LocalPort = Convert.ToInt32(local_port.Text);
+                    LocalPort = local_port.Text;
+                    //LocalPort = Convert.ToInt32(local_port.Text);
                     Remote_Addr = remoteaddr.Text;
                     if (remoteport.Text == "")
                     {
@@ -397,14 +400,6 @@ namespace firewalld
                         netshCommand = $"advfirewall firewall add rule name=\"{Rulename}\" description=\"{Description}\" dir=\"{Direction}\" protocol= \"{PROTOCOL}\" action=\"{Action}\" localip= \"{LocalAddr}\" localport={LocalPort} remoteip=\"{Remote_Addr}\" remoteport={Remote_Port} enable=yes";
                     }
                 }
-                else
-                {
-                    MessageBox.Show("请输入完整的端口信息！");
-                }
-            }
-            else
-            {
-                MessageBox.Show("发生错误，请检查输入的内容再重新添加");
             }
             Process process = new Process();
             process.StartInfo.FileName = "netsh.exe";
@@ -413,22 +408,22 @@ namespace firewalld
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.CreateNoWindow = true;
 
-            // 启动进程
-            process.Start();
-            // 读取输出结果
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
+            Thread thread = new Thread(() =>
+            {
+                process.Start();
+                output = process.StandardOutput.ReadToEnd();
+                process.Close();
+            });
+            thread.Start();
             ex_result.Text = output;
             if (!File.Exists(filePath))
             {
                 File.Create(filePath).Close();
             }
-            // 获取当前时间
             string currentTime = DateTime.Now.ToString();
-            // 使用 StreamWriter 追加写入文件
             using (StreamWriter writer = File.AppendText(filePath))
             {
-                writer.WriteLine(currentTime+ "  netsh " + netshCommand +"  " + output); // 写入当前时间
+                writer.WriteLine(currentTime+ "  netsh " + netshCommand +"  " + output); // 写入当前时间 + output
             }
             if (ruleNames.Count == 2)
             {
@@ -443,12 +438,10 @@ namespace firewalld
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // 允许拖放操作
                 e.Effect = DragDropEffects.All;
             }
             else
             {
-                // 不允许拖放操作
                 e.Effect = DragDropEffects.None;
             }
         }
